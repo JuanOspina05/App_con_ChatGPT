@@ -16,7 +16,7 @@ prob_precipitacion = st.sidebar.slider("Probabilidad de precipitación (%)", min
 
 # Generar datos simulados
 np.random.seed(42)  # Semilla para reproducibilidad
-fechas = pd.date_range(start="2024-01-01", periods=dias_simulacion)
+fechas = pd.date_range(start=pd.Timestamp.now(), periods=dias_simulacion)
 temperaturas = np.random.normal(loc=temp_media, scale=5, size=dias_simulacion).round(1)
 humedades = np.random.normal(loc=humedad_media, scale=10, size=dias_simulacion).clip(10, 100).round(1)
 precipitaciones = (np.random.rand(dias_simulacion) < (prob_precipitacion / 100)).astype(int) * np.random.uniform(0, 20, size=dias_simulacion).round(1)
@@ -33,14 +33,23 @@ data_clima = pd.DataFrame({
 st.subheader(f"Clima simulado para {ciudad} 🌍")
 st.dataframe(data_clima)
 
+# Análisis breve
+st.subheader("Análisis del Clima Simulado")
+st.write(f"- La temperatura promedio en {ciudad} será de **{temperaturas.mean():.1f}°C**.")
+st.write(f"- La humedad promedio será de **{humedades.mean():.1f}%**.")
+st.write(f"- Habrá un total estimado de **{precipitaciones.sum():.1f} mm** de precipitaciones durante el período.")
+
 # Gráficos dinámicos usando herramientas nativas de Streamlit
 st.subheader("Visualización del Clima")
 
 # Gráfico de temperatura
+st.write("### Gráfico de Temperatura")
 st.line_chart(data=data_clima.set_index("Fecha")["Temperatura (°C)"], use_container_width=True)
 
 # Gráfico de humedad
+st.write("### Gráfico de Humedad")
 st.line_chart(data=data_clima.set_index("Fecha")["Humedad (%)"], use_container_width=True)
 
 # Gráfico de precipitación
+st.write("### Gráfico de Precipitación")
 st.bar_chart(data=data_clima.set_index("Fecha")["Precipitación (mm)"], use_container_width=True)
