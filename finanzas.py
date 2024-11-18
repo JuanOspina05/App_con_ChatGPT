@@ -30,14 +30,14 @@ presupuestado = st.number_input("Cantidad presupuestada:", min_value=0.0, step=0
 real = st.number_input("Cantidad real:", min_value=0.0, step=0.1)
 
 if st.button("Agregar"):
-    nuevo_registro = {
+    nuevo_registro = pd.DataFrame([{
         "Fecha": fecha,
         "Categoría": categoria,
         "Presupuestado": presupuestado,
         "Real": real,
         "Tipo": tipo
-    }
-    st.session_state.data = st.session_state.data.append(nuevo_registro, ignore_index=True)
+    }])
+    st.session_state.data = pd.concat([st.session_state.data, nuevo_registro], ignore_index=True)
     st.success("Registro agregado correctamente.")
 
 # Mostrar los datos actuales
@@ -55,7 +55,8 @@ if opcion_reporte == "Semanal":
     inicio_semana = st.date_input("Inicio de la semana", datetime.date.today() - datetime.timedelta(days=7))
     fin_semana = st.date_input("Fin de la semana", datetime.date.today())
 
-    filtro = (st.session_state.data["Fecha"] >= inicio_semana) & (st.session_state.data["Fecha"] <= fin_semana)
+    filtro = (st.session_state.data["Fecha"] >= pd.Timestamp(inicio_semana)) & \
+             (st.session_state.data["Fecha"] <= pd.Timestamp(fin_semana))
     reporte = st.session_state.data.loc[filtro]
     if not reporte.empty:
         reporte = calcular_diferencias(reporte)
