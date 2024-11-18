@@ -31,7 +31,7 @@ real = st.number_input("Cantidad real:", min_value=0.0, step=0.1)
 
 if st.button("Agregar"):
     nuevo_registro = pd.DataFrame([{
-        "Fecha": fecha,
+        "Fecha": pd.to_datetime(fecha),
         "Categoría": categoria,
         "Presupuestado": presupuestado,
         "Real": real,
@@ -55,6 +55,9 @@ if opcion_reporte == "Semanal":
     inicio_semana = st.date_input("Inicio de la semana", datetime.date.today() - datetime.timedelta(days=7))
     fin_semana = st.date_input("Fin de la semana", datetime.date.today())
 
+    # Asegurar que la columna Fecha sea de tipo datetime
+    st.session_state.data['Fecha'] = pd.to_datetime(st.session_state.data['Fecha'])
+
     filtro = (st.session_state.data["Fecha"] >= pd.Timestamp(inicio_semana)) & \
              (st.session_state.data["Fecha"] <= pd.Timestamp(fin_semana))
     reporte = st.session_state.data.loc[filtro]
@@ -68,6 +71,9 @@ if opcion_reporte == "Semanal":
 elif opcion_reporte == "Mensual":
     mes = st.selectbox("Selecciona el mes", range(1, 13), index=datetime.date.today().month - 1)
     año = st.number_input("Selecciona el año", min_value=2000, max_value=2100, value=datetime.date.today().year)
+
+    # Asegurar que la columna Fecha sea de tipo datetime
+    st.session_state.data['Fecha'] = pd.to_datetime(st.session_state.data['Fecha'])
 
     filtro = (
         (st.session_state.data["Fecha"].dt.month == mes) &
