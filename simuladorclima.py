@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Título de la app
 st.title("Visualizador de Clima Simulado 🌤️")
@@ -34,35 +33,14 @@ data_clima = pd.DataFrame({
 st.subheader(f"Clima simulado para {ciudad} 🌍")
 st.dataframe(data_clima)
 
-# Gráficos dinámicos
+# Gráficos dinámicos usando herramientas nativas de Streamlit
 st.subheader("Visualización del Clima")
 
 # Gráfico de temperatura
-fig_temp, ax_temp = plt.subplots()
-ax_temp.plot(data_clima["Fecha"], data_clima["Temperatura (°C)"], marker="o", label="Temperatura (°C)")
-ax_temp.set_title(f"Temperatura Diaria en {ciudad}")
-ax_temp.set_xlabel("Fecha")
-ax_temp.set_ylabel("Temperatura (°C)")
-ax_temp.grid(True)
-plt.xticks(rotation=45)
-st.pyplot(fig_temp)
+st.line_chart(data=data_clima.set_index("Fecha")["Temperatura (°C)"], use_container_width=True)
 
 # Gráfico de humedad
-fig_humedad, ax_humedad = plt.subplots()
-ax_humedad.plot(data_clima["Fecha"], data_clima["Humedad (%)"], marker="o", color="green", label="Humedad (%)")
-ax_humedad.set_title(f"Humedad Diaria en {ciudad}")
-ax_humedad.set_xlabel("Fecha")
-ax_humedad.set_ylabel("Humedad (%)")
-ax_humedad.grid(True)
-plt.xticks(rotation=45)
-st.pyplot(fig_humedad)
+st.line_chart(data=data_clima.set_index("Fecha")["Humedad (%)"], use_container_width=True)
 
 # Gráfico de precipitación
-fig_prec, ax_prec = plt.subplots()
-ax_prec.bar(data_clima["Fecha"], data_clima["Precipitación (mm)"], color="blue", label="Precipitación (mm)")
-ax_prec.set_title(f"Precipitación Diaria en {ciudad}")
-ax_prec.set_xlabel("Fecha")
-ax_prec.set_ylabel("Precipitación (mm)")
-ax_prec.grid(True)
-plt.xticks(rotation=45)
-st.pyplot(fig_prec)
+st.bar_chart(data=data_clima.set_index("Fecha")["Precipitación (mm)"], use_container_width=True)
